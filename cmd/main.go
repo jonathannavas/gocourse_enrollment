@@ -12,6 +12,9 @@ import (
 	"github.com/jonathannavas/gocourse_enrollment/internal/enrollment"
 	"github.com/jonathannavas/gocourse_enrollment/pkg/bootstrap"
 	"github.com/jonathannavas/gocourse_enrollment/pkg/handler"
+
+	courseSdk "github.com/jonathannavas/go_course_sdk/course"
+	userSdk "github.com/jonathannavas/go_course_sdk/user"
 )
 
 func main() {
@@ -30,9 +33,12 @@ func main() {
 		logs.Fatal("paginator limit default is required")
 	}
 
+	courseTrans := courseSdk.NewHttpClient(os.Getenv("API_COURSE_URL"), "")
+	userTrans := userSdk.NewHttpClient(os.Getenv("API_USER_URL"), "")
+
 	ctx := context.Background()
 	enrollmentRepository := enrollment.NewRepo(logs, db)
-	enrollmentService := enrollment.NewService(logs, enrollmentRepository)
+	enrollmentService := enrollment.NewService(logs, enrollmentRepository, courseTrans, userTrans)
 	h := handler.NewUserHTTPServer(ctx, enrollment.MakeEndpoints(enrollmentService, enrollment.Config{LimitPageDef: pagLimitDef}))
 
 	port := os.Getenv("PORT")
