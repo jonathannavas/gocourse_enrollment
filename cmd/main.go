@@ -33,7 +33,7 @@ func main() {
 		logs.Fatal("paginator limit default is required")
 	}
 
-	courseTrans := courseSdk.NewHttpClient(os.Getenv("API_COURSE_URL"), "")
+	courseTrans := courseSdk.NewHttpClient(os.Getenv("API_COURSE_URL"), os.Getenv("API_COURSE_TOKEN"))
 	userTrans := userSdk.NewHttpClient(os.Getenv("API_USER_URL"), "")
 
 	ctx := context.Background()
